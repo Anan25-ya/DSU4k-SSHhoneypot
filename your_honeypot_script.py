@@ -3,6 +3,13 @@ import paramiko
 import threading
 import pymysql.cursors
 from typing import Union
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/health')
+def health_check():
+    return 'OK'
 
 class SSHServer(paramiko.ServerInterface):
     def check_auth_password(self, username: str, password: str) -> int:
