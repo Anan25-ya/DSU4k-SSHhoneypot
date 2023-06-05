@@ -3,6 +3,7 @@ import paramiko
 import threading
 import pymysql.cursors
 from flask import Flask, request
+import os
 
 app = Flask(__name__)
 
@@ -48,8 +49,11 @@ def handle_connection(client_sock: socket.socket) -> None:
 
     ssh.set_server(transport)
 
+    # Get the current directory
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+
     # Read the contents of the index.html file
-    with open('static/index.html', 'r') as file:
+    with open(os.path.join(current_dir, 'index.html'), 'r') as file:
         login_page = file.read()
 
     # Send the fake login page to the client
