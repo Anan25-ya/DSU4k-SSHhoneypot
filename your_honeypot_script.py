@@ -47,7 +47,7 @@ def handle_connection(client_sock: socket.socket) -> None:
     ssh.client_address = client_sock.getpeername()[0]
     ssh.client_os = client_sock.recv(2048).decode('utf-8')
 
-    ssh.set_server(transport)
+    
 
     # Get the current directory
     current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -59,7 +59,7 @@ def handle_connection(client_sock: socket.socket) -> None:
     # Send the fake login page to the client
     transport.send(login_page)
 
-    transport.start_server(server=ssh)
+    transport.start_server(server=ssh.check_channel_request)
 
 def save_to_database(client_ip: str, client_os: str) -> None:
     connection = pymysql.connect(
