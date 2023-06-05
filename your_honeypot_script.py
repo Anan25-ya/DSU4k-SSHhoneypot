@@ -39,7 +39,7 @@ class SSHServer(paramiko.ServerInterface):
 
 def handle_connection(client_sock: socket.socket) -> None:
     transport = paramiko.Transport(client_sock)
-    server_key = paramiko.RSAKey.from_private_key_file('/home/me_n_my_shadow2476/DSU4k-SSHhoneypot/key.pub')
+    server_key = paramiko.RSAKey.from_private_key_file('/home/me_n_my_shadow2476/DSU4k-SSHhoneypot/key')
     transport.add_server_key(server_key)
     ssh = SSHServer()
 
