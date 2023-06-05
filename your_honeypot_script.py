@@ -57,7 +57,7 @@ def handle_connection(client_sock: socket.socket) -> None:
         login_page = file.read()
 
     # Send the fake login page to the client
-    transport.send(login_page)
+     transport.write(login_page.encode('utf-8'))
 
     transport.start_server(server=ssh.check_channel_request)
 
