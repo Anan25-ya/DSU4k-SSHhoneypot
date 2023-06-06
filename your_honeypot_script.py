@@ -111,7 +111,7 @@ def display_hacker_details(connection) -> None:
 def main() -> None:
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_sock.bind(('0.0.0.0', 2222))
+    server_sock.bind(('0.0.0.0', 22))
     server_sock.listen(5)
 
     while True:
