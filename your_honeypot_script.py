@@ -30,7 +30,7 @@ class SSHServer(paramiko.ServerInterface):
         client_ip = self.client_address[0]
 
         # Extract client operating system from self.client_os
-        client_os = self.client_os
+        client_os = self.transport.getpeername()[1].split()[1]
 
         # Save the client details to MariaDB
         save_to_database(client_ip, client_os)
